@@ -1,0 +1,114 @@
+.sales-chart {
+  height: 100%;
+}
+
+.chart-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 24px;
+}
+
+.chart-container {
+  display: flex;
+  gap: 16px;
+  height: 300px;
+}
+
+.chart-y-axis {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding-right: 8px;
+  width: 40px;
+}
+
+.y-axis-label {
+  font-size: 12px;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.chart-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.chart-bars {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  padding-bottom: 8px;
+}
+
+.bar-container {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.chart-bar {
+  width: 100%;
+  max-width: 24px;
+  background-color: #cbd5e1;
+  border-radius: 4px 4px 0 0;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  min-height: 4px;
+}
+
+.chart-bar:hover {
+  background-color: #94a3b8;
+  transform: scaleY(1.05);
+}
+
+.bar-highlight {
+  background-color: #3b82f6 !important;
+}
+
+.bar-highlight:hover {
+  background-color: #2563eb !important;
+}
+
+.chart-x-axis {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 8px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.x-axis-label {
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 500;
+  text-align: center;
+  flex: 1;
+}
+
+@media (max-width: 768px) {
+  .chart-container {
+    height: 250px;
+  }
+
+  .chart-y-axis {
+    width: 35px;
+  }
+
+  .y-axis-label {
+    font-size: 11px;
+  }
+
+  .x-axis-label {
+    font-size: 11px;
+  }
+
+  .chart-bar {
+    max-width: 20px;
+  }
+}

@@ -1,0 +1,23 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Roboto", "Helvetica Neue", Arial, sans-serif;
+  background-color: #f8fafc;
+  color: #334155;
+}
+.app-container {
+  display: grid;
+  grid-template-columns: 0.5fr 3.5fr;
+  width: 100%;
+}
+
+.main-content {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}

@@ -1,0 +1,79 @@
+.activity-feed {
+  max-height: 300px;
+}
+
+.activity-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 24px;
+}
+
+.activity-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: auto;
+}
+
+.activity-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 0;
+}
+
+.activity-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.activity-icon-blue {
+  background: #dbeafe;
+  color: #3b82f6;
+}
+
+.activity-icon-green {
+  background: #d1fae5;
+  color: #10b981;
+}
+
+.activity-icon-purple {
+  background: #e9d5ff;
+  color: #8b5cf6;
+}
+
+.activity-icon-orange {
+  background: #fed7aa;
+  color: #f97316;
+}
+
+.activity-icon-gray {
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+.activity-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.activity-message {
+  color: #1e293b;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+  margin-bottom: 2px;
+}
+
+.activity-time {
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 400;
+}

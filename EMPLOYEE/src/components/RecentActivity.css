@@ -1,0 +1,48 @@
+.recent-activity {
+  margin-top: 24px;
+}
+
+.activity-list {
+  background: #fff;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.activity-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 0;
+}
+
+.activity-item:not(:last-child) {
+  border-bottom: 1px solid #f1f5f9;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+}
+
+.activity-dot {
+  width: 8px;
+  height: 8px;
+  background: #64748b;
+  border-radius: 50%;
+  margin-top: 6px;
+  flex-shrink: 0;
+}
+
+.activity-content {
+  flex: 1;
+}
+
+.activity-text {
+  font-size: 14px;
+  color: #1f2937;
+  margin: 0;
+  display: inline;
+}
+
+.activity-time {
+  font-size: 14px;
+  color: #64748b;
+}
