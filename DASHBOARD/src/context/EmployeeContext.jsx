@@ -9,9 +9,11 @@ const EmployeeContext = createContext();
 
 export const EmployeeProvider = ({ children }) => {
   const [employees, setEmployees] = useState([]);
+  const [activeEmployees, setActiveEmployees] =
+    useState("");
   const [loading, setLoading] = useState(true);
 
-  // Fetch employees once on mount
+  // 🔁 Fetch all employees
   const fetchEmployees = async () => {
     try {
       setLoading(true);
@@ -23,6 +25,11 @@ export const EmployeeProvider = ({ children }) => {
 
       const data = await res.json();
       setEmployees(data);
+
+      const activeCount = data.filter(
+        (emp) => emp.status === "Active"
+      ).length;
+      setActiveEmployees(activeCount);
     } catch (error) {
       console.error(
         "Error fetching employees:",
@@ -33,7 +40,76 @@ export const EmployeeProvider = ({ children }) => {
     }
   };
 
-  // Call on mount
+  // ➕ Add
+  const addEmployee = async (employeeData) => {
+    try {
+      const res = await fetch(
+        "http://localhost:3000/api/employee/add",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(employeeData),
+        }
+      );
+
+      if (!res.ok)
+        throw new Error("Failed to add employee");
+
+      await fetchEmployees();
+    } catch (error) {
+      console.error("Add employee error:", error.message);
+      throw error;
+    }
+  };
+
+  // ✏️ Update
+  const updateEmployee = async (id, employeeData) => {
+    try {
+      const res = await fetch(
+        `http://localhost:3000/api/employee/update/${id}`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(employeeData),
+        }
+      );
+
+      if (!res.ok)
+        throw new Error("Failed to update employee");
+
+      await fetchEmployees();
+    } catch (error) {
+      console.error(
+        "Update employee error:",
+        error.message
+      );
+      throw error;
+    }
+  };
+
+  // ❌ Delete
+  const deleteEmployee = async (id) => {
+    try {
+      const res = await fetch(
+        `http://localhost:3000/api/employee/delete/${id}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (!res.ok)
+        throw new Error("Failed to delete employee");
+
+      await fetchEmployees();
+    } catch (error) {
+      console.error(
+        "Delete employee error:",
+        error.message
+      );
+      throw error;
+    }
+  };
+
   useEffect(() => {
     fetchEmployees();
   }, []);
@@ -42,9 +118,12 @@ export const EmployeeProvider = ({ children }) => {
     <EmployeeContext.Provider
       value={{
         employees,
-        setEmployees,
-        fetchEmployees,
         loading,
+        fetchEmployees,
+        addEmployee,
+        updateEmployee,
+        deleteEmployee,
+        activeEmployees,
       }}
     >
       {children}

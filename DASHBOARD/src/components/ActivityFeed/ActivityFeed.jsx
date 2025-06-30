@@ -1,72 +1,47 @@
+import { useEffect, useState } from "react";
+import { formatDistanceToNow } from "date-fns";
 import "./ActivityFeed.css";
 
 const ActivityFeed = () => {
-  const activities = [
-    {
-      id: 1,
-      message: "You assigned a lead to Priya",
-      time: "1 hour ago",
-      type: "assignment",
-    },
-    {
-      id: 2,
-      message: "Jay closed a deal",
-      time: "2 hours ago",
-      type: "success",
-    },
-    {
-      id: 3,
-      message: "New lead from website",
-      time: "3 hours ago",
-      type: "info",
-    },
-    {
-      id: 4,
-      message: "Meeting scheduled with client",
-      time: "4 hours ago",
-      type: "meeting",
-    },
-    {
-      id: 5,
-      message: "Follow-up reminder set",
-      time: "5 hours ago",
-      type: "reminder",
-    },
-    {
-      id: 6,
-      message: "Follow-up reminder set",
-      time: "2 hours ago",
-      type: "reminder",
-    },
-    {
-      id: 7,
-      message: "Follow-up reminder set",
-      time: "7 hours ago",
-      type: "reminder",
-    },
-  ];
+  const [activities, setActivities] = useState([]);
 
   const getActivityIcon = (type) => {
     const icons = {
-      assignment: "👤",
-      success: "✅",
-      info: "📧",
-      meeting: "📅",
-      reminder: "⏰",
+      assign: "👤",
+      close: "✅",
+      add: "📧",
+      schedule: "📅",
     };
     return icons[type] || "📝";
   };
 
   const getActivityColor = (type) => {
     const colors = {
-      assignment: "blue",
-      success: "green",
-      info: "purple",
-      meeting: "orange",
-      reminder: "gray",
+      assign: "blue",
+      close: "green",
+      add: "purple",
+      schedule: "orange",
     };
     return colors[type] || "gray";
   };
+
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        const res = await fetch(
+          "http://localhost:3000/api/events/getAllEvents"
+        );
+        if (!res.ok)
+          throw new Error("Failed to fetch notifications");
+        const data = await res.json();
+        setActivities(data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchNotifications();
+  }, []);
 
   return (
     <div className='activity-feed'>
@@ -74,28 +49,36 @@ const ActivityFeed = () => {
         Recent Activity Feed
       </h3>
       <div className='activity-list'>
-        {activities.map((activity) => (
-          <div
-            key={activity.id}
-            className='activity-item'
-          >
+        {activities.length === 0 ? (
+          <p>No recent activity.</p>
+        ) : (
+          activities.map((activity) => (
             <div
-              className={`activity-icon activity-icon-${getActivityColor(
-                activity.type
-              )}`}
+              key={activity._id}
+              className='activity-item'
             >
-              {getActivityIcon(activity.type)}
+              <div
+                className={`activity-icon activity-icon-${getActivityColor(
+                  activity.type
+                )}`}
+              >
+                {getActivityIcon(activity.type)}
+              </div>
+              <div className='activity-content'>
+                <p className='activity-message'>
+                  {activity.message}
+                </p>
+                <span className='activity-time'>
+                  –{" "}
+                  {formatDistanceToNow(
+                    new Date(activity.createdAt),
+                    { addSuffix: true }
+                  )}
+                </span>
+              </div>
             </div>
-            <div className='activity-content'>
-              <p className='activity-message'>
-                {activity.message}
-              </p>
-              <span className='activity-time'>
-                – {activity.time}
-              </span>
-            </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
     </div>
   );

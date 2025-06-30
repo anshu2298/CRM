@@ -5,13 +5,26 @@ import {
   locations,
 } from "../../../utils/data.js";
 import EmployeesTable from "../../EmployeesTable/EmployeesTable.jsx";
-// import { employees } from "../../../utils/data.js";
 import { useEmployeesContext } from "../../../context/EmployeeContext.jsx";
 
 const Employees = ({ menuState }) => {
-  const { employees } = useEmployeesContext();
+  const {
+    employees,
+    addEmployee,
+    updateEmployee,
+    deleteEmployee,
+  } = useEmployeesContext();
+
   const [currentPage, setCurrentPage] = useState(1);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] =
+    useState(false);
+  const [employeeToDelete, setEmployeeToDelete] =
+    useState(null);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [employeeToEdit, setEmployeeToEdit] =
+    useState(null);
+
   const [newEmployee, setNewEmployee] = useState({
     firstName: "",
     lastName: "",
@@ -30,20 +43,39 @@ const Employees = ({ menuState }) => {
     currentPage * employeesPerPage
   );
 
-  // const handleCheckboxChange = (employeeId) => {
-  //   setSelectedEmployees((prev) =>
-  //     prev.includes(employeeId)
-  //       ? prev.filter((id) => id !== employeeId)
-  //       : [...prev, employeeId]
-  //   );
-  // };
-
   const handleAddEmployee = () => {
+    setIsEditMode(false);
+    setNewEmployee({
+      firstName: "",
+      lastName: "",
+      email: "",
+      location: "Karnataka",
+      preferredLanguage: "Tamil",
+    });
+    setShowAddModal(true);
+  };
+
+  const onEditEmployee = (employee) => {
+    const [firstName, ...lastNameParts] =
+      employee.name.split(" ");
+    const lastName = lastNameParts.join(" ");
+
+    setNewEmployee({
+      firstName: firstName || "",
+      lastName: lastName || "",
+      email: employee.email,
+      location: employee.location,
+      preferredLanguage: employee.preferredLanguage,
+    });
+
+    setEmployeeToEdit(employee._id); // Save ID to use during update
+    setIsEditMode(true);
     setShowAddModal(true);
   };
 
   const handleCloseModal = () => {
     setShowAddModal(false);
+    setIsEditMode(false);
     setNewEmployee({
       firstName: "",
       lastName: "",
@@ -55,46 +87,21 @@ const Employees = ({ menuState }) => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setNewEmployee((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setNewEmployee((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSaveEmployee = async (e) => {
     e.preventDefault();
-
     try {
-      const res = await fetch(
-        "http://localhost:3000/api/employee/add",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(newEmployee),
-        }
-      );
-
-      if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(
-          errorData.message || "Failed to add employee"
-        );
+      if (isEditMode) {
+        await updateEmployee(employeeToEdit, newEmployee);
+      } else {
+        await addEmployee(newEmployee);
       }
-
-      const data = await res.json();
-      console.log("Employee added:", data);
-
-      // Optionally show a success toast or refresh list here
-
       handleCloseModal();
     } catch (error) {
-      console.error(
-        "Error adding employee:",
-        error.message
-      );
-      alert("Failed to add employee");
+      console.log(error);
+      alert("Something went wrong!");
     }
   };
 
@@ -102,10 +109,16 @@ const Employees = ({ menuState }) => {
     setCurrentPage(page);
   };
 
-  // const handleEditEmployee = (employeeId) => {
-  //   console.log("Edit employee:", employeeId);
-  //   setActiveDropdown(null);
-  // };
+  const handleConfirmDelete = async () => {
+    try {
+      await deleteEmployee(employeeToDelete);
+      setShowDeleteModal(false);
+      setEmployeeToDelete(null);
+    } catch (error) {
+      console.log(error);
+      alert("Failed to delete employee");
+    }
+  };
 
   return (
     <div className='employees-page'>
@@ -121,18 +134,19 @@ const Employees = ({ menuState }) => {
       <EmployeesTable
         menuState={menuState}
         employees={paginatedEmployees}
-        // handleCheckboxChange={handleCheckboxChange}
-
-        // handleEditEmployee={handleEditEmployee}
+        setShowDeleteModal={setShowDeleteModal}
+        setEmployeeToDelete={setEmployeeToDelete}
+        onEditEmployee={onEditEmployee}
       />
 
+      {/* Pagination */}
       <div className='pagination'>
         <button
           className='pagination-btn pagination-prev'
           onClick={() => handlePageChange(currentPage - 1)}
           disabled={currentPage === 1}
         >
-          <span className='pagination-arrow'>←</span>
+          <span className='pagination-arrow'>←</span>{" "}
           Previous
         </button>
 
@@ -158,11 +172,38 @@ const Employees = ({ menuState }) => {
           onClick={() => handlePageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
         >
-          Next
-          <span className='pagination-arrow'>→</span>
+          Next <span className='pagination-arrow'>→</span>
         </button>
       </div>
 
+      {/* Delete Modal */}
+      {showDeleteModal && (
+        <div className='delete-modal-overlay'>
+          <div className='delete-modal-content'>
+            <p className='modal-message'>
+              All the Leads will be distributed among other
+              employees equally. Do you want to delete this
+              employee?
+            </p>
+            <div className='delete-modal-actions'>
+              <button
+                className='modal-button modal-button-cancel'
+                onClick={() => setShowDeleteModal(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className='modal-button modal-button-confirm'
+                onClick={handleConfirmDelete}
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Add/Edit Modal */}
       {showAddModal && (
         <>
           <div
@@ -172,7 +213,9 @@ const Employees = ({ menuState }) => {
           <div className='add-employee-modal'>
             <div className='modal-header'>
               <h2 className='modal-title'>
-                Add New Employee
+                {isEditMode
+                  ? "Edit Employee"
+                  : "Add New Employee"}
               </h2>
               <button
                 className='modal-close-btn'
@@ -186,62 +229,32 @@ const Employees = ({ menuState }) => {
               onSubmit={handleSaveEmployee}
               className='modal-form'
             >
-              <div className='form-group'>
-                <label
-                  htmlFor='firstName'
-                  className='form-label'
-                >
-                  First name
-                </label>
-                <input
-                  type='text'
-                  id='firstName'
-                  name='firstName'
-                  value={newEmployee.firstName}
-                  onChange={handleInputChange}
-                  className='form-input'
-                  placeholder='Sarthak'
-                  required
-                />
-              </div>
-
-              <div className='form-group'>
-                <label
-                  htmlFor='lastName'
-                  className='form-label'
-                >
-                  Last name
-                </label>
-                <input
-                  type='text'
-                  id='lastName'
-                  name='lastName'
-                  value={newEmployee.lastName}
-                  onChange={handleInputChange}
-                  className='form-input'
-                  placeholder='Pal'
-                  required
-                />
-              </div>
-
-              <div className='form-group'>
-                <label
-                  htmlFor='email'
-                  className='form-label'
-                >
-                  Email
-                </label>
-                <input
-                  type='email'
-                  id='email'
-                  name='email'
-                  value={newEmployee.email}
-                  onChange={handleInputChange}
-                  className='form-input'
-                  placeholder='Sarthakpal08@gmail.com'
-                  required
-                />
-              </div>
+              {["firstName", "lastName", "email"].map(
+                (field) => (
+                  <div
+                    className='form-group'
+                    key={field}
+                  >
+                    <label
+                      htmlFor={field}
+                      className='form-label'
+                    >
+                      {field.replace(/([A-Z])/g, " $1")}
+                    </label>
+                    <input
+                      type={
+                        field === "email" ? "email" : "text"
+                      }
+                      id={field}
+                      name={field}
+                      value={newEmployee[field]}
+                      onChange={handleInputChange}
+                      className='form-input'
+                      required
+                    />
+                  </div>
+                )
+              )}
 
               <div className='form-group'>
                 <label
@@ -257,22 +270,17 @@ const Employees = ({ menuState }) => {
                     value={newEmployee.location}
                     onChange={handleInputChange}
                     className='form-select'
-                    required
+                    disabled={isEditMode}
                   >
-                    {locations.map((location) => (
+                    {locations.map((loc) => (
                       <option
-                        key={location}
-                        value={location}
+                        key={loc}
+                        value={loc}
                       >
-                        {location}
+                        {loc}
                       </option>
                     ))}
                   </select>
-                  <div className='select-arrow'>▼</div>
-                </div>
-                <div className='form-hint'>
-                  <span className='hint-icon'>ℹ</span>
-                  Lead will be assigned on basis of location
                 </div>
               </div>
 
@@ -290,22 +298,17 @@ const Employees = ({ menuState }) => {
                     value={newEmployee.preferredLanguage}
                     onChange={handleInputChange}
                     className='form-select'
-                    required
+                    disabled={isEditMode}
                   >
-                    {languages.map((language) => (
+                    {languages.map((lang) => (
                       <option
-                        key={language}
-                        value={language}
+                        key={lang}
+                        value={lang}
                       >
-                        {language}
+                        {lang}
                       </option>
                     ))}
                   </select>
-                  <div className='select-arrow'>▼</div>
-                </div>
-                <div className='form-hint'>
-                  <span className='hint-icon'>ℹ</span>
-                  Lead will be assigned on basis of language
                 </div>
               </div>
 

@@ -1,10 +1,13 @@
 const express = require("express");
-const router = express.Router();
-
 const {
   addLead,
+  updateLead,
+  addLeadReminder,
 } = require("../Controller/leadsController.js");
 
-router.post("/add-leads", addLead);
+const router = express.Router();
 
+router.post("/add", addLead);
+router.patch("/:leadId", updateLead);
+router.patch("/:leadId/reminder", addLeadReminder);
 module.exports = router;

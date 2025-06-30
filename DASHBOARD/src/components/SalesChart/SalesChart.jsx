@@ -1,76 +1,109 @@
-import { useState } from "react";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  ResponsiveContainer,
+  CartesianGrid,
+  Tooltip,
+} from "recharts";
 import "./SalesChart.css";
 
-const SalesChart = () => {
-  const [chartData] = useState([
-    { day: "Sat", value: 20, week: 1 },
-    { day: "Sun", value: 35, week: 1 },
-    { day: "Mon", value: 25, week: 1 },
-    { day: "Tue", value: 15, week: 1 },
-    { day: "Wed", value: 20, week: 1 },
-    { day: "Thu", value: 58, week: 1 },
-    { day: "Fri", value: 45, week: 1 },
-    { day: "Sat", value: 38, week: 2 },
-    { day: "Sun", value: 12, week: 2 },
-    { day: "Mon", value: 25, week: 2 },
-    { day: "Tue", value: 28, week: 2 },
-    { day: "Wed", value: 32, week: 2 },
-    { day: "Thu", value: 25, week: 2 },
-    { day: "Fri", value: 30, week: 2 },
-  ]);
+const salesData = [
+  { day: "Sat", percentage: 18 },
+  { day: "Sun", percentage: 32 },
+  { day: "Mon", percentage: 19 },
+  { day: "Tue", percentage: 11 },
+  { day: "Wed", percentage: 18 },
+  { day: "Thu", percentage: 59 },
+  { day: "Fri", percentage: 46 },
+  { day: "Sat", percentage: 35 },
+  { day: "Sun", percentage: 18 },
+  { day: "Mon", percentage: 24 },
+  { day: "Tue", percentage: 22 },
+  { day: "Wed", percentage: 8 },
+  { day: "Thu", percentage: 15 },
+  { day: "Fri", percentage: 12 },
+];
 
-  const maxValue = Math.max(
-    ...chartData.map((item) => item.value)
-  );
+const CustomTooltip = ({ active, payload, label }) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className='custom-tooltip'>
+        <p className='tooltip-label'>{label}</p>
+        <p className='tooltip-value'>
+          Sales:{" "}
+          <span className='tooltip-percentage'>
+            {payload[0].value}%
+          </span>
+        </p>
+      </div>
+    );
+  }
+  return null;
+};
 
+function SalesChart() {
   return (
-    <div className='sales-chart'>
-      <h3 className='chart-title'>Sale Analytics</h3>
-      <div className='chart-container'>
-        <div className='chart-y-axis'>
-          <span className='y-axis-label'>60%</span>
-          <span className='y-axis-label'>50%</span>
-          <span className='y-axis-label'>40%</span>
-          <span className='y-axis-label'>30%</span>
-          <span className='y-axis-label'>20%</span>
-          <span className='y-axis-label'>10%</span>
-          <span className='y-axis-label'>0%</span>
-        </div>
-        <div className='chart-content'>
-          <div className='chart-bars'>
-            {chartData.map((item, index) => (
-              <div
-                key={index}
-                className='bar-container'
-              >
-                <div
-                  className={`chart-bar ${
-                    index === 5 ? "bar-highlight" : ""
-                  }`}
-                  style={{
-                    height: `${
-                      (item.value / maxValue) * 100
-                    }%`,
-                  }}
-                  title={`${item.day}: ${item.value}%`}
-                ></div>
-              </div>
-            ))}
-          </div>
-          <div className='chart-x-axis'>
-            {chartData.map((item, index) => (
-              <span
-                key={index}
-                className='x-axis-label'
-              >
-                {item.day}
-              </span>
-            ))}
-          </div>
-        </div>
+    <div className='sales-chart-container'>
+      <h2 className='chart-title'>Sale Analytics</h2>
+      <div className='chart-wrapper'>
+        <ResponsiveContainer
+          width='100%'
+          height={300}
+        >
+          <BarChart
+            data={salesData}
+            margin={{
+              top: 20,
+              right: 30,
+            }}
+            barGap={4}
+          >
+            <XAxis
+              dataKey='day'
+              axisLine={false}
+              tickLine={false}
+              tick={{
+                fontSize: 14,
+                fill: "#6B7280",
+                fontWeight: 500,
+              }}
+            />
+            <YAxis
+              domain={[0, 60]}
+              ticks={[0, 10, 20, 30, 40, 50, 60]}
+              axisLine={false}
+              tickLine={false}
+              tick={{
+                fontSize: 14,
+                fill: "#6B7280",
+                fontWeight: 500,
+              }}
+              tickFormatter={(value) => `${value}%`}
+            />
+            <Tooltip
+              content={<CustomTooltip />}
+              cursor={{
+                fill: "rgba(107, 114, 128, 0.1)",
+                radius: [4, 4, 0, 0],
+              }}
+            />
+            <CartesianGrid
+              stroke='#ccc'
+              strokeDasharray='15 15'
+            />
+            <Bar
+              dataKey='percentage'
+              fill='#D1D5DB'
+              radius={[40, 40, 0, 0]}
+              maxBarSize={40}
+            />
+          </BarChart>
+        </ResponsiveContainer>
       </div>
     </div>
   );
-};
+}
 
 export default SalesChart;

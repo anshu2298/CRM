@@ -14,9 +14,9 @@ const Dashboard = ({ menuState }) => {
     <div className='dashboard-content'>
       <StatsCards />
       <div className='dashboard-grid'>
-        <div className='chart-section'>
-          <SalesChart />
-        </div>
+        <SalesChart />
+        {/* <div className='chart-section'>
+        </div> */}
         <div className='activity-section'>
           <ActivityFeed />
         </div>

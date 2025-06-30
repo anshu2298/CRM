@@ -1,17 +1,22 @@
 import "./EmployeesTable.css";
-import { useEffect, useState } from "react";
+import { useState, useMemo } from "react";
 import { getInitials } from "../../utils/support";
+import { CiEdit } from "react-icons/ci";
+import { RiDeleteBinLine } from "react-icons/ri";
 
 const EmployeesTable = ({
   menuState,
   employees,
-  handleCheckboxChange,
+  setShowDeleteModal,
+  setEmployeeToDelete,
+  onEditEmployee,
 }) => {
   const [activeDropdown, setActiveDropdown] =
     useState(null);
-
-  const [selectedEmployees, setSelectedEmployees] =
-    useState([]);
+  const [sortConfig, setSortConfig] = useState({
+    key: null,
+    direction: "asc",
+  });
 
   const handleDropdownToggle = (employeeId) => {
     setActiveDropdown(
@@ -20,31 +25,50 @@ const EmployeesTable = ({
   };
 
   const handleEditEmployee = (employee) => {
-    console.log("Edit employee:", employee);
+    onEditEmployee(employee);
     setActiveDropdown(null);
-    // Here you would typically open an edit modal or navigate to edit page
   };
 
   const handleDeleteEmployee = (employeeId) => {
-    console.log("Delete employee:", employeeId);
     setActiveDropdown(null);
-    // Here you would typically show a confirmation dialog and then delete
+    setShowDeleteModal(true);
+    setEmployeeToDelete(employeeId);
   };
 
-  const handleClickOutside = (e) => {
-    if (!e.target.closest(".action-menu-container")) {
-      setActiveDropdown(null);
-    }
+  const handleSort = (key) => {
+    setSortConfig((prev) => {
+      if (prev.key === key) {
+        return {
+          key,
+          direction:
+            prev.direction === "asc" ? "desc" : "asc",
+        };
+      }
+      return { key, direction: "asc" };
+    });
   };
 
-  useEffect(() => {
-    document.addEventListener("click", handleClickOutside);
-    return () =>
-      document.removeEventListener(
-        "click",
-        handleClickOutside
-      );
-  }, []);
+  const sortedEmployees = useMemo(() => {
+    const sorted = [...employees];
+    if (!sortConfig.key) return sorted;
+
+    sorted.sort((a, b) => {
+      const valA = a[sortConfig.key];
+      const valB = b[sortConfig.key];
+
+      if (typeof valA === "string") {
+        return sortConfig.direction === "asc"
+          ? valA.localeCompare(valB)
+          : valB.localeCompare(valA);
+      }
+
+      return sortConfig.direction === "asc"
+        ? valA - valB
+        : valB - valA;
+    });
+
+    return sorted;
+  }, [employees, sortConfig]);
 
   return (
     <div className='employees-table-container'>
@@ -52,35 +76,54 @@ const EmployeesTable = ({
         <table className='employees-table'>
           <thead>
             <tr>
-              <th className='checkbox-column'>
-                <input
-                  type='checkbox'
-                  className='table-checkbox'
-                />
+              <th onClick={() => handleSort("name")}>
+                Name{" "}
+                {sortConfig.key === "name"
+                  ? sortConfig.direction === "asc"
+                    ? "▲"
+                    : "▼"
+                  : ""}
               </th>
-              <th>Name</th>
-              <th>Employee ID</th>
-              <th>Assigned Leads</th>
-              <th>Closed Leads</th>
-              <th>Status</th>
+              <th onClick={() => handleSort("employeeId")}>
+                Employee ID{" "}
+                {sortConfig.key === "employeeId"
+                  ? sortConfig.direction === "asc"
+                    ? "▲"
+                    : "▼"
+                  : ""}
+              </th>
+              <th
+                onClick={() => handleSort("assignedLeads")}
+              >
+                Assigned Leads{" "}
+                {sortConfig.key === "assignedLeads"
+                  ? sortConfig.direction === "asc"
+                    ? "▲"
+                    : "▼"
+                  : ""}
+              </th>
+              <th onClick={() => handleSort("closedLeads")}>
+                Closed Leads{" "}
+                {sortConfig.key === "closedLeads"
+                  ? sortConfig.direction === "asc"
+                    ? "▲"
+                    : "▼"
+                  : ""}
+              </th>
+              <th onClick={() => handleSort("status")}>
+                Status{" "}
+                {sortConfig.key === "status"
+                  ? sortConfig.direction === "asc"
+                    ? "▲"
+                    : "▼"
+                  : ""}
+              </th>
               <th className='actions-column'></th>
             </tr>
           </thead>
           <tbody>
-            {employees.map((employee) => (
-              <tr key={employee.id}>
-                <td className='checkbox-column'>
-                  <input
-                    type='checkbox'
-                    className='table-checkbox'
-                    checked={selectedEmployees.includes(
-                      employee.id
-                    )}
-                    onChange={() =>
-                      handleCheckboxChange(employee)
-                    }
-                  />
-                </td>
+            {sortedEmployees.map((employee) => (
+              <tr key={employee._id}>
                 <td className='name-cell'>
                   <div className='employee-info'>
                     <div className='employee-avatar'>
@@ -107,15 +150,9 @@ const EmployeesTable = ({
                     </div>
                   </div>
                 </td>
-                <td className='employee-id'>
-                  {employee.employeeId}
-                </td>
-                <td className='leads-count'>
-                  {employee.assignedLeads}
-                </td>
-                <td className='leads-count'>
-                  {employee.closedLeads}
-                </td>
+                <td>{employee.employeeId}</td>
+                <td>{employee.assignedLeads.length}</td>
+                <td>{employee.closedLeads.length}</td>
                 <td>
                   <span
                     className={`status-badge ${
@@ -136,7 +173,7 @@ const EmployeesTable = ({
                     {employee.status}
                   </span>
                 </td>
-                {menuState === "Employees" ? (
+                {menuState === "Employees" && (
                   <td className='actions-column'>
                     <div className='action-menu-container'>
                       <button
@@ -154,13 +191,11 @@ const EmployeesTable = ({
                           <button
                             className='dropdown-item edit-item'
                             onClick={() =>
-                              handleEditEmployee(
-                                employee._id
-                              )
+                              handleEditEmployee(employee)
                             }
                           >
                             <span className='dropdown-icon'>
-                              ✏️
+                              <CiEdit size={25} />
                             </span>
                             Edit
                           </button>
@@ -173,7 +208,7 @@ const EmployeesTable = ({
                             }
                           >
                             <span className='dropdown-icon'>
-                              🗑️
+                              <RiDeleteBinLine />
                             </span>
                             Delete
                           </button>
@@ -181,7 +216,7 @@ const EmployeesTable = ({
                       )}
                     </div>
                   </td>
-                ) : null}
+                )}
               </tr>
             ))}
           </tbody>

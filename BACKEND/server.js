@@ -6,9 +6,10 @@ const cors = require("cors");
 const port = process.env.PORT;
 const url = process.env.DB_URI;
 const employeeRouter = require("./Routes/employeeRouter.js");
-const authRouter = require("./Routes/authRouter.js");
+const authRouter = require("./Routes/adminAuthRouter.js");
 const cvsRouter = require("./Routes/cvsRouter.js");
 const leadsRouter = require("./Routes/leadsRouter.js");
+const notificationRouter = require("./Routes/notificationRoter.js");
 
 const app = express();
 app.use(
@@ -25,9 +26,10 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/employee", employeeRouter);
-app.use("/api/auth", authRouter);
-app.use("/api/cvs", cvsRouter);
+app.use("/api/admin-auth", authRouter);
+app.use("/api/csv", cvsRouter);
 app.use("/api/leads", leadsRouter);
+app.use("/api/events", notificationRouter);
 const start = async () => {
   try {
     connectDB(url).then(() => {

@@ -3,32 +3,30 @@ import { GrCurrency } from "react-icons/gr";
 import { IoPerson } from "react-icons/io5";
 import { MdOutlineHandshake } from "react-icons/md";
 import { IoSpeedometerOutline } from "react-icons/io5";
+import { useEmployeesContext } from "../../context/EmployeeContext";
 
 const StatsCards = () => {
+  const { activeEmployees } = useEmployeesContext();
   const stats = [
     {
       title: "Unassigned Leads",
       value: "12",
       icon: <GrCurrency />,
-      color: "#ececec",
     },
     {
       title: "Assigned This Week",
       value: "24",
       icon: <IoPerson />,
-      color: "#ececec",
     },
     {
       title: "Active Salespeople",
-      value: "5",
+      value: activeEmployees,
       icon: <MdOutlineHandshake />,
-      color: "#ececec",
     },
     {
       title: "Conversion Rate",
       value: "32%",
       icon: <IoSpeedometerOutline />,
-      color: "#ececec",
     },
   ];
 

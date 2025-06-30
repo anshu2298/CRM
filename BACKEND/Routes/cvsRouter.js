@@ -11,6 +11,6 @@ cvsRouter.post(
   cvsParser
 );
 
-cvsRouter.get("/get-cvs-data", getCvsData);
+cvsRouter.get("/get-csv-data", getCvsData);
 
 module.exports = cvsRouter;

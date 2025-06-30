@@ -95,12 +95,6 @@
   gap: 1.5rem;
 }
 
-.form-row {
-  width: 100%;
-  display: flex;
-  gap: 1rem;
-}
-
 .form-grp {
   display: flex;
   flex-direction: column;
@@ -198,26 +192,6 @@
   border-top: 1px solid #e5e7eb;
 }
 
-.auth-footer p {
-  color: #6b7280;
-  font-size: 0.875rem;
-}
-
-.toggle-btn {
-  background: none;
-  border: none;
-  color: #667eea;
-  font-weight: 600;
-  cursor: pointer;
-  text-decoration: underline;
-  font-size: 0.875rem;
-  transition: color 0.2s ease;
-}
-
-.toggle-btn:hover {
-  color: #5a67d8;
-}
-
 @media (max-width: 768px) {
   .auth-container {
     flex-direction: column;
@@ -246,6 +220,11 @@
     padding: 1.5rem;
     border-radius: 0;
     box-shadow: none;
+    max-width: 100%;
+  }
+
+  .auth-background {
+    display: none;
   }
 
   .logo h1 {

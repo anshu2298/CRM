@@ -1,0 +1,276 @@
+.schedule {
+  padding-top: 24px;
+}
+
+.search-section {
+  margin-bottom: 24px;
+}
+
+.search-container {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.search-input-wrapper {
+  flex: 1;
+  position: relative;
+  background: #e2e8f0;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+}
+
+.search-icon {
+  font-size: 16px;
+  color: #000;
+  margin-right: 8px;
+  display: flex;
+  align-items: center;
+}
+
+.search-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  padding: 12px 0;
+  font-size: 16px;
+  color: #1f2937;
+  outline: none;
+}
+
+.search-input::placeholder {
+  color: #64748b;
+}
+
+.filter-wrapper {
+  position: relative;
+}
+
+.filter-button {
+  background: #e2e8f0;
+  border: none;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.filter-button:hover {
+  background: #cbd5e1;
+}
+
+.filter-icon {
+  font-size: 18px;
+  color: #000;
+  display: flex;
+  align-items: center;
+}
+
+.filter-dropdown {
+  position: absolute;
+  top: 50px;
+  right: 0;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  padding: 16px;
+  width: 160px;
+  z-index: 1000;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+select {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #fff;
+  color: #333;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='gray' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 16px;
+  min-width: fit-content;
+}
+
+.filter-header {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 12px;
+  text-align: left;
+}
+
+.save-filter-button {
+  width: 100%;
+  background: #1f2937;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin-top: 30px;
+}
+
+.save-filter-button:hover {
+  background: #374151;
+}
+
+.schedule-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.schedule-item {
+  background: #e2e8f0;
+  border-radius: 16px;
+  padding: 25px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  justify-content: space-between;
+}
+
+.schedule-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.schedule-item.highlighted {
+  background: linear-gradient(
+    135deg,
+    #4f46e5 0%,
+    #3b82f6 100%
+  );
+  color: white;
+}
+
+.schedule-item:not(.highlighted) .avatar {
+  background: #f1f5f9;
+}
+
+.schedule-header {
+  display: flex;
+  gap: 20px;
+  flex-direction: column;
+}
+
+.schedule-type {
+  display: flex;
+  align-items: start;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 4px;
+  width: 100%;
+}
+
+.label {
+  font-size: 22px;
+}
+
+.contact-number {
+  font-size: 18px;
+  font-weight: 400;
+  margin-top: 10px;
+}
+
+.schedule-details {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.contact-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.call-icon {
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+}
+
+.call-label {
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.contact-person {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.avatar {
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+}
+
+.contact-name {
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.schedule-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  justify-content: space-between;
+}
+.schedule-date {
+  font-size: 18px;
+  font-weight: 500;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.schedule-time {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 18px;
+  gap: 8px;
+  font-weight: 500;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .schedule-item {
+    padding: 16px;
+  }
+
+  .type-label {
+    font-size: 16px;
+  }
+
+  .phone-number {
+    font-size: 15px;
+  }
+
+  .filter-dropdown {
+    right: -8px;
+  }
+}

@@ -16,7 +16,7 @@ export const LeadsProvider = ({ children }) => {
     try {
       setLoading(true);
       const res = await fetch(
-        "http://localhost:3000/api/cvs/get-cvs-data"
+        "http://localhost:3000/api/csv/get-csv-data"
       );
       if (!res.ok) throw new Error("Failed to fetch leads");
 

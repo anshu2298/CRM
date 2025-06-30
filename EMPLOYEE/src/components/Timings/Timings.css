@@ -1,0 +1,131 @@
+.timings {
+  margin-top: 24px;
+}
+
+.section-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: #1f2937;
+}
+
+.checkin-container {
+  background-color: #2051e5;
+  display: flex;
+  padding: 15px 15px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.time {
+  display: flex;
+  gap: 20px;
+}
+
+.time-display label {
+  font-size: 14px;
+  font-weight: 500;
+  color: white;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.break-title {
+  font-size: larger;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.time-display {
+  font-size: 18px;
+  font-weight: 600;
+  color: white;
+}
+
+.active-indicator {
+  background: #64e800;
+  height: 45px;
+  width: 20px;
+  border-radius: 10px;
+  border: 2px solid white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.break-history {
+  background: #e4e8f2;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  height: 300px;
+  overflow-y: auto;
+}
+
+.break-herder {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.break-time-display {
+  font-size: 18px;
+  font-weight: 500;
+  color: black;
+  margin-bottom: 4px;
+}
+
+label {
+  display: block;
+  font-size: 18px;
+}
+
+.break-active-indicator {
+  background: #e80000;
+  height: 45px;
+  width: 20px;
+  border-radius: 10px;
+  border: 2px solid white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.history-header {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #d0d0d0;
+  margin-bottom: 12px;
+}
+
+.history-header span {
+  font-size: 14px;
+  font-weight: 600;
+  color: black;
+}
+
+.history-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  padding: 8px 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.history-row:last-child {
+  border-bottom: none;
+}
+
+.break-time,
+.end-time,
+.date {
+  font-size: 14px;
+  color: black;
+}
+
+.break-time {
+  font-weight: 600;
+}

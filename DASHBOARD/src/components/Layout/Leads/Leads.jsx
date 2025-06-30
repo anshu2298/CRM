@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import "./Leads.css";
 import { useLeadsContext } from "../../../context/LeadsContext";
 import { FaFolderPlus } from "react-icons/fa";
@@ -9,6 +9,7 @@ import {
   CircularProgressbar,
 } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
+import { FaDownload } from "react-icons/fa6";
 
 function Leads() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -18,36 +19,86 @@ function Leads() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [isDragOver, setIsDragOver] = useState(false);
-  const [leadDistribution, setLeadDistribution] =
-    useState(true);
-  const [language, setLanguage] = useState(true);
-  const [location, setLocation] = useState(true);
-  const { leads } = useLeadsContext();
   const [isLoadingFile, setIsLoadingFile] = useState(false);
-  const percentage = 66;
+
+  const { leads } = useLeadsContext();
+
   const leadsPerPage = 5;
   const totalPages = Math.ceil(leads.length / leadsPerPage);
 
-  const paginatedLeads = leads.slice(
+  const [sortConfig, setSortConfig] = useState({
+    key: null,
+    direction: "asc",
+  });
+
+  const handleUpload = async () => {
+    if (!selectedFile) {
+      alert("Please select a CSV file first");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", selectedFile);
+    `.single("file")`;
+
+    try {
+      const res = await fetch(
+        "http://localhost:3000/api/csv/upload-leads",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      const result = await res.json();
+      console.log("Upload Response:", result);
+
+      // Optional: Close modal and reset
+      handleCloseModal();
+    } catch (err) {
+      console.error("Upload failed:", err);
+    }
+  };
+
+  const handleSort = (key) => {
+    setSortConfig((prev) => {
+      if (prev.key === key) {
+        return {
+          key,
+          direction:
+            prev.direction === "asc" ? "desc" : "asc",
+        };
+      }
+      return { key, direction: "asc" };
+    });
+  };
+
+  const sortedEmployees = useMemo(() => {
+    const sorted = [...leads];
+    if (!sortConfig.key) return sorted;
+
+    sorted.sort((a, b) => {
+      const valA = a[sortConfig.key];
+      const valB = b[sortConfig.key];
+
+      if (typeof valA === "string") {
+        return sortConfig.direction === "asc"
+          ? valA.localeCompare(valB)
+          : valB.localeCompare(valA);
+      }
+
+      return sortConfig.direction === "asc"
+        ? valA - valB
+        : valB - valA;
+    });
+
+    return sorted;
+  }, [leads, sortConfig]);
+
+  const paginatedLeads = sortedEmployees.slice(
     (currentPage - 1) * leadsPerPage,
     currentPage * leadsPerPage
   );
-
-  const handleUpload = () => {
-    if (selectedFile) {
-      console.log(
-        "Processing CSV file:",
-        selectedFile.name
-      );
-      console.log("Lead Distribution:", leadDistribution);
-      console.log("Language:", language);
-      console.log("Location:", location);
-      // Here you would typically process the CSV file
-      handleCloseModal();
-    } else {
-      alert("Please select a CSV file first");
-    }
-  };
 
   const handleAddLead = () => {
     setShowAddModal(true);
@@ -70,7 +121,7 @@ function Leads() {
         setProgress(progressValue);
         if (progressValue >= 100) {
           clearInterval(interval);
-          setSelectedFile(file); // show file details + toggles
+          setSelectedFile(file);
           setIsLoadingFile(false);
         }
       }, 1000);
@@ -105,19 +156,6 @@ function Leads() {
     document.getElementById("csv-file-input").click();
   };
 
-  const handleNext = () => {
-    if (selectedFile) {
-      console.log(
-        "Processing CSV file:",
-        selectedFile.name
-      );
-      // Here you would typically process the CSV file
-      handleCloseModal();
-    } else {
-      alert("Please select a CSV file first");
-    }
-  };
-
   const handleDropdownToggle = (leadId) => {
     setActiveDropdown(
       activeDropdown === leadId ? null : leadId
@@ -133,7 +171,6 @@ function Leads() {
     setCurrentPage(page);
   };
 
-  // Close dropdown when clicking outside
   const handleClickOutside = (e) => {
     if (!e.target.closest(".action-menu-container")) {
       setActiveDropdown(null);
@@ -156,8 +193,7 @@ function Leads() {
     );
   };
 
-  // Add event listener for clicking outside
-  useState(() => {
+  useEffect(() => {
     document.addEventListener("click", handleClickOutside);
     return () =>
       document.removeEventListener(
@@ -183,11 +219,56 @@ function Leads() {
             <thead>
               <tr>
                 <th>No.</th>
-                <th>Name</th>
-                <th>Date</th>
-                <th>No. of Leads</th>
-                <th>Assigned Leads</th>
-                <th>Unassigned Leads</th>
+                <th onClick={() => handleSort("fileName")}>
+                  Name{" "}
+                  {sortConfig.key === "fileName"
+                    ? sortConfig.direction === "asc"
+                      ? "▲"
+                      : "▼"
+                    : ""}
+                </th>
+                <th onClick={() => handleSort("Date")}>
+                  Date{" "}
+                  {sortConfig.key === "Date"
+                    ? sortConfig.direction === "asc"
+                      ? "▲"
+                      : "▼"
+                    : ""}
+                </th>
+                <th
+                  onClick={() => handleSort("totalLeads")}
+                >
+                  No. of Leads{" "}
+                  {sortConfig.key === "totalLeads"
+                    ? sortConfig.direction === "asc"
+                      ? "▲"
+                      : "▼"
+                    : ""}
+                </th>
+                <th
+                  onClick={() =>
+                    handleSort("assignedLeads")
+                  }
+                >
+                  Assigned Leads{" "}
+                  {sortConfig.key === "assignedLeads"
+                    ? sortConfig.direction === "asc"
+                      ? "▲"
+                      : "▼"
+                    : ""}
+                </th>
+                <th
+                  onClick={() =>
+                    handleSort("unassignedLeads")
+                  }
+                >
+                  Unassigned Leads{" "}
+                  {sortConfig.key === "unassignedLeads"
+                    ? sortConfig.direction === "asc"
+                      ? "▲"
+                      : "▼"
+                    : ""}
+                </th>
                 <th className='actions-column'></th>
               </tr>
             </thead>
@@ -280,8 +361,7 @@ function Leads() {
           onClick={() => handlePageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
         >
-          Next
-          <span className='pagination-arrow'>→</span>
+          Next <span className='pagination-arrow'>→</span>
         </button>
       </div>
 
@@ -360,90 +440,30 @@ function Leads() {
                 </div>
               )}
 
-              {/* File Selected State */}
               {isLoadingFile
                 ? null
                 : selectedFile && (
-                    <>
-                      <div className='uploaded-file'>
-                        <div className='file-icon-container'>
-                          <CiFileOn size={30} />
-                        </div>
-                        <div className='file-details'>
-                          <span className='file-name'>
-                            {selectedFile.name}
-                          </span>
-                          <span className='file-size'>
-                            {formatFileSize(
-                              selectedFile.size
-                            )}
-                          </span>
-                        </div>
-                        <button
-                          className='remove-file-button'
-                          onClick={handleRemoveFile}
-                        >
-                          <AiOutlineDelete size={20} />
-                        </button>
+                    <div className='uploaded-file'>
+                      <div className='file-icon-container'>
+                        <CiFileOn size={30} />
                       </div>
-
-                      {/* Configuration Options */}
-                      <div className='config-section'>
-                        <div className='config-item'>
-                          <span className='config-label'>
-                            Lead distribution
-                          </span>
-                          <label className='toggle-switch'>
-                            <input
-                              type='checkbox'
-                              checked={leadDistribution}
-                              onChange={(e) =>
-                                setLeadDistribution(
-                                  e.target.checked
-                                )
-                              }
-                            />
-                            <span className='toggle-slider'></span>
-                          </label>
-                        </div>
-
-                        <div className='config-item'>
-                          <span className='config-label'>
-                            Language
-                          </span>
-                          <label className='toggle-switch'>
-                            <input
-                              type='checkbox'
-                              checked={language}
-                              onChange={(e) =>
-                                setLanguage(
-                                  e.target.checked
-                                )
-                              }
-                            />
-                            <span className='toggle-slider'></span>
-                          </label>
-                        </div>
-
-                        <div className='config-item'>
-                          <span className='config-label'>
-                            Location
-                          </span>
-                          <label className='toggle-switch'>
-                            <input
-                              type='checkbox'
-                              checked={location}
-                              onChange={(e) =>
-                                setLocation(
-                                  e.target.checked
-                                )
-                              }
-                            />
-                            <span className='toggle-slider'></span>
-                          </label>
-                        </div>
+                      <div className='file-details'>
+                        <span className='file-name'>
+                          {selectedFile.name}
+                        </span>
+                        <span className='file-size'>
+                          {formatFileSize(
+                            selectedFile.size
+                          )}
+                        </span>
                       </div>
-                    </>
+                      <button
+                        className='remove-file-button'
+                        onClick={handleRemoveFile}
+                      >
+                        <AiOutlineDelete size={20} />
+                      </button>
+                    </div>
                   )}
 
               <div className='sample-file-info'>
@@ -451,35 +471,7 @@ function Leads() {
                   Sample File.csv
                 </span>
                 <button className='download-btn'>
-                  <svg
-                    width='16'
-                    height='16'
-                    viewBox='0 0 24 24'
-                    fill='none'
-                    xmlns='http://www.w3.org/2000/svg'
-                  >
-                    <path
-                      d='M21 15V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V15'
-                      stroke='#6B7280'
-                      strokeWidth='2'
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                    />
-                    <path
-                      d='M7 10L12 15L17 10'
-                      stroke='#6B7280'
-                      strokeWidth='2'
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                    />
-                    <path
-                      d='M12 15V3'
-                      stroke='#6B7280'
-                      strokeWidth='2'
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                    />
-                  </svg>
+                  <FaDownload size={20} />
                 </button>
               </div>
 
@@ -492,15 +484,16 @@ function Leads() {
                   Cancel
                 </button>
                 <button
+                  disabled={isLoadingFile}
                   type='button'
-                  className={`action-btn ${
-                    selectedFile ? "upload-btn" : "next-btn"
-                  }`}
                   onClick={
                     selectedFile
                       ? handleUpload
                       : handleBrowseFiles
-                  }
+                  } // 👈 Hook it up
+                  className={`action-btn ${
+                    selectedFile ? "upload-btn" : "next-btn"
+                  }`}
                 >
                   {selectedFile ? "Upload" : "Next"}
                   {!selectedFile && (
