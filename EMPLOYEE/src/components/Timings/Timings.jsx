@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { useEffect, useState } from "react";
 import "./Timings.css";
+import { API_PATHS } from "../../utils/apiPaths";
 
 function Timings() {
   const [checkInTime, setCheckInTime] = useState("--:--");
@@ -28,7 +29,7 @@ function Timings() {
     const fetchLogs = async () => {
       try {
         const res = await fetch(
-          `http://localhost:3000/api/employee/attendance/${user._id}`
+          API_PATHS.EMPLOYEE.GET_ATTENDANCE(user._id)
         );
 
         const data = await res.json();

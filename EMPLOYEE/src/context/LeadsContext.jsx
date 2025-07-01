@@ -5,7 +5,7 @@ import {
   useState,
 } from "react";
 import { useAuth } from "./AuthContext";
-
+import { API_PATHS } from "../utils/apiPaths";
 const LeadsContext = createContext();
 
 export const LeadsProvider = ({ children }) => {
@@ -19,7 +19,7 @@ export const LeadsProvider = ({ children }) => {
   const fetchEmployeeLeads = async (employeeId) => {
     try {
       const res = await fetch(
-        `http://localhost:3000/api/employee/${employeeId}/leads`
+        API_PATHS.LEADS.GET(employeeId)
       );
       const data = await res.json();
       if (res.ok) {
@@ -49,44 +49,35 @@ export const LeadsProvider = ({ children }) => {
       )
     );
 
-    await fetch(
-      `http://localhost:3000/api/leads/${leadId}`,
-      {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ [field]: value }),
-      }
-    );
+    await fetch(API_PATHS.LEADS.UPDATE(leadId), {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ [field]: value }),
+    });
 
     if (field === "leadStatus") {
+      await fetch(API_PATHS.EMPLOYEE.UPDATE(employeeId), {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          addToClosedLeads: leadId,
+        }),
+      });
+      await fetch(API_PATHS.NOTIFICATION.ADD, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          message: `${user.name} closed a lead`,
+          type: "close",
+        }),
+      });
       await fetch(
-        `http://localhost:3000/api/employee/update/${employeeId}`,
-        {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            addToClosedLeads: leadId,
-          }),
-        }
-      );
-      await fetch(
-        `http://localhost:3000/api/events/add-event`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            message: `${user.name} closed a lead`,
-            type: "close",
-          }),
-        }
-      );
-      await fetch(
-        `http://localhost:3000/api/employee/activity/${user._id}`,
+        API_PATHS.EMPLOYEE.SET_ACTIVITY(employeeId),
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            message: `you closed a lead`,
+            message: `You closed a lead`,
           }),
         }
       );
@@ -99,7 +90,7 @@ export const LeadsProvider = ({ children }) => {
   ) => {
     try {
       const res = await fetch(
-        `http://localhost:3000/api/leads/${leadId}/reminder`,
+        API_PATHS.LEADS.SET_REMINDER(leadId),
         {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
@@ -124,19 +115,16 @@ export const LeadsProvider = ({ children }) => {
             : lead
         )
       );
+      await fetch(API_PATHS.NOTIFICATION.ADD, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          message: `${user.name} scheduled a call`,
+          type: "close",
+        }),
+      });
       await fetch(
-        `http://localhost:3000/api/events/add-event`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            message: `${user.name} scheduled a call`,
-            type: "close",
-          }),
-        }
-      );
-      await fetch(
-        `http://localhost:3000/api/employee/activity/${user._id}`,
+        API_PATHS.EMPLOYEE.SET_ACTIVITY(user._id),
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

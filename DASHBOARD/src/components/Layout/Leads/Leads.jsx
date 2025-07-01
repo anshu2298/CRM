@@ -21,10 +21,12 @@ function Leads() {
   const [isDragOver, setIsDragOver] = useState(false);
   const [isLoadingFile, setIsLoadingFile] = useState(false);
 
-  const { leads } = useLeadsContext();
+  const { csvStats } = useLeadsContext();
 
   const leadsPerPage = 5;
-  const totalPages = Math.ceil(leads.length / leadsPerPage);
+  const totalPages = Math.ceil(
+    csvStats.length / leadsPerPage
+  );
 
   const [sortConfig, setSortConfig] = useState({
     key: null,
@@ -73,8 +75,8 @@ function Leads() {
     });
   };
 
-  const sortedEmployees = useMemo(() => {
-    const sorted = [...leads];
+  const sortedStats = useMemo(() => {
+    const sorted = [...csvStats];
     if (!sortConfig.key) return sorted;
 
     sorted.sort((a, b) => {
@@ -93,9 +95,9 @@ function Leads() {
     });
 
     return sorted;
-  }, [leads, sortConfig]);
+  }, [csvStats, sortConfig]);
 
-  const paginatedLeads = sortedEmployees.slice(
+  const paginatedLeads = sortedStats.slice(
     (currentPage - 1) * leadsPerPage,
     currentPage * leadsPerPage
   );

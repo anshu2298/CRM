@@ -4,18 +4,24 @@ import { IoPerson } from "react-icons/io5";
 import { MdOutlineHandshake } from "react-icons/md";
 import { IoSpeedometerOutline } from "react-icons/io5";
 import { useEmployeesContext } from "../../context/EmployeeContext";
+import { useLeadsContext } from "../../context/LeadsContext";
 
 const StatsCards = () => {
   const { activeEmployees } = useEmployeesContext();
+  const {
+    weeklyAssigned,
+    conversionRate,
+    totalUnassignedLeads,
+  } = useLeadsContext();
   const stats = [
     {
       title: "Unassigned Leads",
-      value: "12",
+      value: totalUnassignedLeads,
       icon: <GrCurrency />,
     },
     {
       title: "Assigned This Week",
-      value: "24",
+      value: weeklyAssigned,
       icon: <IoPerson />,
     },
     {
@@ -25,7 +31,7 @@ const StatsCards = () => {
     },
     {
       title: "Conversion Rate",
-      value: "32%",
+      value: `${conversionRate}%`,
       icon: <IoSpeedometerOutline />,
     },
   ];

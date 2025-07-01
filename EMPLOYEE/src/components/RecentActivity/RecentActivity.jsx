@@ -39,14 +39,14 @@ function RecentActivity() {
               <p className='activity-text'>
                 {activity.message}
               </p>
-              <span className='activity-time'>
+              <p className='activity-time'>
                 {" "}
                 -{" "}
                 {formatDistanceToNow(
                   new Date(activity.timestamp),
                   { addSuffix: true }
                 )}
-              </span>
+              </p>
             </li>
           </div>
         ))}

@@ -20,9 +20,7 @@ const Settings = () => {
         throw new Error("Failed to fetch admin data");
 
       const data = await res.json();
-      const user = data[0]; // ✅ Get the first user
-
-      console.log(user);
+      const user = data[0];
 
       setFormData((prev) => ({
         ...prev,

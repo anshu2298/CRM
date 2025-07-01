@@ -4,7 +4,7 @@ import {
   useEffect,
   useState,
 } from "react";
-
+import { API_PATHS } from "../utils/apiPaths";
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -21,7 +21,7 @@ export const AuthProvider = ({ children }) => {
   const changeActiveStatus = async (employeeId, status) => {
     try {
       const res = await fetch(
-        `http://localhost:3000/api/employee/update/${employeeId}`,
+        API_PATHS.EMPLOYEE.UPDATE(employeeId),
         {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
@@ -43,7 +43,7 @@ export const AuthProvider = ({ children }) => {
   const logSessionEvent = async (employeeId, type) => {
     try {
       await fetch(
-        `http://localhost:3000/api/employee/session/${employeeId}`,
+        API_PATHS.EMPLOYEE.UPDATE_SESSION(employeeId),
         {
           method: "PATCH",
           headers: {
@@ -58,16 +58,13 @@ export const AuthProvider = ({ children }) => {
   };
 
   const login = async (email, password) => {
-    const res = await fetch(
-      "http://localhost:3000/api/employee/login",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      }
-    );
+    const res = await fetch(API_PATHS.EMPLOYEE.LOGIN, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    });
 
     const data = await res.json();
 

@@ -7,7 +7,7 @@ import {
 import EmployeesTable from "../../EmployeesTable/EmployeesTable.jsx";
 import { useEmployeesContext } from "../../../context/EmployeeContext.jsx";
 
-const Employees = ({ menuState }) => {
+const Employees = ({ menuState, searchTerm }) => {
   const {
     employees,
     addEmployee,
@@ -33,12 +33,24 @@ const Employees = ({ menuState }) => {
     preferredLanguage: "Tamil",
   });
 
+  const filteredEmployees = employees.filter((item) => {
+    const matchesSearch =
+      item.name
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
+      item.email
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
+
+    return matchesSearch;
+  });
+
   const employeesPerPage = 8;
   const totalPages = Math.ceil(
     employees.length / employeesPerPage
   );
 
-  const paginatedEmployees = employees.slice(
+  const paginatedEmployees = filteredEmployees.slice(
     (currentPage - 1) * employeesPerPage,
     currentPage * employeesPerPage
   );

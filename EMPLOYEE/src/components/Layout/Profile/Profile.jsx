@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import "./Profile.css";
+import { API_PATHS } from "../../../utils/apiPaths";
 
 function Profile() {
   const [formData, setFormData] = useState({
@@ -53,7 +54,7 @@ function Profile() {
       )._id;
 
       const response = await fetch(
-        `http://localhost:3000/api/employee/update/${employeeId}`,
+        API_PATHS.EMPLOYEE.UPDATE(employeeId),
         {
           method: "PATCH",
           headers: {

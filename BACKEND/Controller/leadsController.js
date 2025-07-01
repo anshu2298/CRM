@@ -1,5 +1,17 @@
 const Lead = require("../Models/leadsModel.js");
 
+const getAllLeads = async (req, res) => {
+  try {
+    const leads = await Lead.find();
+    res.status(200).json({ leads });
+  } catch (error) {
+    console.error("Error fetching leads:", error);
+    res.status(500).json({
+      message: "Server error while fetching leads",
+    });
+  }
+};
+
 const addLead = async (req, res) => {
   try {
     const {
@@ -53,6 +65,8 @@ const updateLead = async (req, res) => {
     // Build update object only with provided fields
     const update = {};
     if (leadStatus) update.leadStatus = leadStatus;
+    if (leadStatus === "Closed")
+      update.leadClosedAt = new Date();
     if (type) update.type = type;
 
     const updatedLead = await Lead.findByIdAndUpdate(
@@ -117,4 +131,5 @@ module.exports = {
   addLead,
   updateLead,
   addLeadReminder,
+  getAllLeads,
 };

@@ -24,7 +24,10 @@ const leadSchema = new mongoose.Schema(
     leadStatus: {
       type: String,
       enum: ["Ongoing", "Closed"],
-      default: "New",
+      default: "Ongoing",
+    },
+    leadClosedAt: {
+      type: Date,
     },
     location: {
       type: String,

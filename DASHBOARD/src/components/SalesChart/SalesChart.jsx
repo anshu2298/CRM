@@ -8,23 +8,7 @@ import {
   Tooltip,
 } from "recharts";
 import "./SalesChart.css";
-
-const salesData = [
-  { day: "Sat", percentage: 18 },
-  { day: "Sun", percentage: 32 },
-  { day: "Mon", percentage: 19 },
-  { day: "Tue", percentage: 11 },
-  { day: "Wed", percentage: 18 },
-  { day: "Thu", percentage: 59 },
-  { day: "Fri", percentage: 46 },
-  { day: "Sat", percentage: 35 },
-  { day: "Sun", percentage: 18 },
-  { day: "Mon", percentage: 24 },
-  { day: "Tue", percentage: 22 },
-  { day: "Wed", percentage: 8 },
-  { day: "Thu", percentage: 15 },
-  { day: "Fri", percentage: 12 },
-];
+import { useLeadsContext } from "../../context/LeadsContext";
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
@@ -34,7 +18,7 @@ const CustomTooltip = ({ active, payload, label }) => {
         <p className='tooltip-value'>
           Sales:{" "}
           <span className='tooltip-percentage'>
-            {payload[0].value}%
+            {payload[0].value}
           </span>
         </p>
       </div>
@@ -44,6 +28,7 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 
 function SalesChart() {
+  const { salesData } = useLeadsContext();
   return (
     <div className='sales-chart-container'>
       <h2 className='chart-title'>Sale Analytics</h2>
@@ -71,8 +56,8 @@ function SalesChart() {
               }}
             />
             <YAxis
-              domain={[0, 60]}
-              ticks={[0, 10, 20, 30, 40, 50, 60]}
+              domain={[0, 20]}
+              ticks={[0, 5, 10, 15, 20]}
               axisLine={false}
               tickLine={false}
               tick={{
@@ -80,7 +65,7 @@ function SalesChart() {
                 fill: "#6B7280",
                 fontWeight: 500,
               }}
-              tickFormatter={(value) => `${value}%`}
+              tickFormatter={(value) => `${value}`}
             />
             <Tooltip
               content={<CustomTooltip />}
