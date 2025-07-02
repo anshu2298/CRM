@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { formatDistanceToNow } from "date-fns";
 import "./ActivityFeed.css";
+import { API_PATHS } from "../../utils/apiPaths";
 
 const ActivityFeed = () => {
   const [activities, setActivities] = useState([]);
@@ -28,9 +29,7 @@ const ActivityFeed = () => {
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        const res = await fetch(
-          "http://localhost:3000/api/events/getAllEvents"
-        );
+        const res = await fetch(API_PATHS.EVENTS.GET);
         if (!res.ok)
           throw new Error("Failed to fetch notifications");
         const data = await res.json();

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import "./Settings.css";
+import { API_PATHS } from "../../../utils/apiPaths";
 
 const Settings = () => {
   const [formData, setFormData] = useState({
@@ -14,7 +15,7 @@ const Settings = () => {
   const fetchAdminData = async () => {
     try {
       const res = await fetch(
-        "http://localhost:3000/api/admin-auth/getUser"
+        API_PATHS.ADMIN.GET_ADMIN_DATA
       );
       if (!res.ok)
         throw new Error("Failed to fetch admin data");
@@ -49,20 +50,17 @@ const Settings = () => {
     e.preventDefault();
 
     try {
-      const res = await fetch(
-        "http://localhost:3000/api/admin-auth/update",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            firstName: formData.firstName,
-            lastName: formData.lastName,
-            email: formData.email,
-          }),
-        }
-      );
+      const res = await fetch(API_PATHS.ADMIN.UPDATE, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          email: formData.email,
+        }),
+      });
 
       if (!res.ok) {
         throw new Error("Failed to update profile");

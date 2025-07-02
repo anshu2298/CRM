@@ -10,6 +10,7 @@ import {
 } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import { FaDownload } from "react-icons/fa6";
+import { API_PATHS } from "../../../utils/apiPaths";
 
 function Leads() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -44,13 +45,10 @@ function Leads() {
     `.single("file")`;
 
     try {
-      const res = await fetch(
-        "http://localhost:3000/api/csv/upload-leads",
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
+      const res = await fetch(API_PATHS.CSV_DATA.UPLOAD, {
+        method: "POST",
+        body: formData,
+      });
 
       const result = await res.json();
       console.log("Upload Response:", result);

@@ -15,8 +15,6 @@ const Dashboard = ({ menuState }) => {
       <StatsCards />
       <div className='dashboard-grid'>
         <SalesChart />
-        {/* <div className='chart-section'>
-        </div> */}
         <div className='activity-section'>
           <ActivityFeed />
         </div>

@@ -5,7 +5,7 @@ import {
   useState,
 } from "react";
 import { getLastNDays } from "../utils/support";
-
+import { API_PATHS } from "../utils/apiPaths";
 const LeadsContext = createContext();
 
 export const LeadsProvider = ({ children }) => {
@@ -21,9 +21,7 @@ export const LeadsProvider = ({ children }) => {
   const fetchCsvStats = async () => {
     try {
       setLoading(true);
-      const res = await fetch(
-        "http://localhost:3000/api/csv/get-csv-data"
-      );
+      const res = await fetch(API_PATHS.CSV_DATA.GET);
       if (!res.ok) throw new Error("Failed to fetch leads");
 
       const data = await res.json();
@@ -66,9 +64,7 @@ export const LeadsProvider = ({ children }) => {
 
   const fetchClosedLeads = async () => {
     try {
-      const res = await fetch(
-        "http://localhost:3000/api/leads/all"
-      );
+      const res = await fetch(API_PATHS.LEADS.GET_ALL);
       const { leads } = await res.json();
       const closedLeads = leads.filter(
         (lead) => lead.leadClosedAt
@@ -101,9 +97,7 @@ export const LeadsProvider = ({ children }) => {
 
   const fetchLeads = async () => {
     try {
-      const res = await fetch(
-        "http://localhost:3000/api/leads/all"
-      );
+      const res = await fetch(API_PATHS.LEADS.GET_ALL);
       const data = await res.json();
 
       if (res.ok && data.leads) {

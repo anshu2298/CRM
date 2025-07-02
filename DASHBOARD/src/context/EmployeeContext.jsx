@@ -4,7 +4,7 @@ import {
   useEffect,
   useState,
 } from "react";
-
+import { API_PATHS } from "../utils/apiPaths";
 const EmployeeContext = createContext();
 
 export const EmployeeProvider = ({ children }) => {
@@ -17,9 +17,7 @@ export const EmployeeProvider = ({ children }) => {
   const fetchEmployees = async () => {
     try {
       setLoading(true);
-      const res = await fetch(
-        "http://localhost:3000/api/employee/all"
-      );
+      const res = await fetch(API_PATHS.EMPLOYEES.GET);
       if (!res.ok)
         throw new Error("Failed to fetch employees");
 
@@ -43,14 +41,11 @@ export const EmployeeProvider = ({ children }) => {
   // ➕ Add
   const addEmployee = async (employeeData) => {
     try {
-      const res = await fetch(
-        "http://localhost:3000/api/employee/add",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(employeeData),
-        }
-      );
+      const res = await fetch(API_PATHS.EMPLOYEES.ADD, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(employeeData),
+      });
 
       if (!res.ok)
         throw new Error("Failed to add employee");
@@ -66,7 +61,7 @@ export const EmployeeProvider = ({ children }) => {
   const updateEmployee = async (id, employeeData) => {
     try {
       const res = await fetch(
-        `http://localhost:3000/api/employee/update/${id}`,
+        API_PATHS.EMPLOYEES.UPDATE(id),
         {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
@@ -91,7 +86,7 @@ export const EmployeeProvider = ({ children }) => {
   const deleteEmployee = async (id) => {
     try {
       const res = await fetch(
-        `http://localhost:3000/api/employee/delete/${id}`,
+        API_PATHS.EMPLOYEES.DELETE(id),
         {
           method: "DELETE",
         }
