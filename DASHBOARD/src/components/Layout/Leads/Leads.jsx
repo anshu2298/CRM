@@ -21,7 +21,7 @@ function Leads() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [isDragOver, setIsDragOver] = useState(false);
   const [isLoadingFile, setIsLoadingFile] = useState(false);
-
+  const [loading, setLoading] = useState(false);
   const { csvStats } = useLeadsContext();
 
   const leadsPerPage = 5;
@@ -35,6 +35,7 @@ function Leads() {
   });
 
   const handleUpload = async () => {
+    setLoading(true);
     if (!selectedFile) {
       alert("Please select a CSV file first");
       return;
@@ -50,12 +51,11 @@ function Leads() {
         body: formData,
       });
 
-      const result = await res.json();
-      console.log("Upload Response:", result);
-
-      // Optional: Close modal and reset
+      await res.json();
+      setLoading(false);
       handleCloseModal();
     } catch (err) {
+      setLoading(false);
       console.error("Upload failed:", err);
     }
   };
@@ -484,13 +484,13 @@ function Leads() {
                   Cancel
                 </button>
                 <button
-                  disabled={isLoadingFile}
+                  disabled={isLoadingFile || loading}
                   type='button'
                   onClick={
                     selectedFile
                       ? handleUpload
                       : handleBrowseFiles
-                  } // 👈 Hook it up
+                  }
                   className={`action-btn ${
                     selectedFile ? "upload-btn" : "next-btn"
                   }`}
