@@ -1,5 +1,5 @@
-const BASE_URL = "http://localhost:3000";
-// const BASE_URL = "https://crm-backend-sooty.vercel.app";
+// const BASE_URL = "http://localhost:3000";
+const BASE_URL = "https://crm-backend-sooty.vercel.app";
 export const API_PATHS = {
   LEADS: {
     GET_ALL: `${BASE_URL}/api/leads/all`,
