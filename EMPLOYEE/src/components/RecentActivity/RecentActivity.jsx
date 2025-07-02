@@ -11,7 +11,7 @@ function RecentActivity() {
     const fetchActivity = async () => {
       try {
         const res = await fetch(
-          API_PATHS.NOTIFICATION.GET_NOTIFICATIONS
+          API_PATHS.NOTIFICATION.GET_NOTIFICATIONS(user._id)
         );
         const data = await res.json();
         setActivities(data.recentActivity.reverse());
