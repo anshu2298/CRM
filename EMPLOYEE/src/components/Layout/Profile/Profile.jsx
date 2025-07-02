@@ -74,7 +74,6 @@ function Profile() {
           position: "top-right",
           autoClose: 2000,
         });
-        console.log("Updated user:", data.employee);
         localStorage.setItem(
           "user",
           JSON.stringify(data.employee)

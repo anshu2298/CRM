@@ -3,6 +3,7 @@ const Employee = require("../Models/EmployeeModel.js");
 const Cvs = require("../Models/cvsModel.js");
 const Lead = require("../Models/leadsModel.js");
 const Notification = require("../Models/notificationModel.js");
+
 const cvsParser = async (req, res) => {
   try {
     if (!req.file) {
@@ -50,11 +51,14 @@ const cvsParser = async (req, res) => {
 
     // ➤ Group 1: Leads with Assigned Employee
     for (const lead of leadsWithAssignedEmployee) {
+      const assignedEmpValue = lead.assignedEmployeeEmail;
+
       const matchedEmployee = employees.find(
         (emp) =>
-          emp.email.toLowerCase() ===
-          lead.assignedEmployeeEmail
+          emp.email.toLowerCase() === assignedEmpValue ||
+          emp.name.toLowerCase() === assignedEmpValue
       );
+
       const { assignedEmployeeEmail, ...leadData } = lead;
 
       const savedLead = await Lead.create({
