@@ -1,5 +1,3 @@
-const path = require("path");
-const fsp = require("fs/promises");
 const Papa = require("papaparse");
 const Employee = require("../Models/EmployeeModel.js");
 const Cvs = require("../Models/cvsModel.js");
@@ -13,15 +11,7 @@ const cvsParser = async (req, res) => {
         .json({ error: "No file uploaded." });
     }
 
-    const filePath = path.join(
-      __dirname,
-      "../uploads",
-      req.file.filename
-    );
-    const fileContent = await fsp.readFile(filePath, {
-      encoding: "utf-8",
-    });
-    await fsp.unlink(filePath); // delete the uploaded file
+    const fileContent = req.file.buffer.toString("utf-8");
 
     const { data } = Papa.parse(fileContent, {
       header: true,
