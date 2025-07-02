@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import "./Profile.css";
 import { API_PATHS } from "../../../utils/apiPaths";
-
+import { toast } from "react-toastify";
 function Profile() {
   const [formData, setFormData] = useState({
     firstName: "",
@@ -38,7 +38,10 @@ function Profile() {
 
   const handleSave = async () => {
     if (formData.password !== formData.confirmPassword) {
-      alert("Passwords do not match.");
+      toast.error("Passwords do not match.", {
+        position: "top-right",
+        autoClose: 2000,
+      });
       return;
     }
 
@@ -67,18 +70,33 @@ function Profile() {
       const data = await response.json();
 
       if (response.ok) {
-        alert("Profile updated successfully!");
+        toast.success("Profile Updated..!", {
+          position: "top-right",
+          autoClose: 2000,
+        });
         console.log("Updated user:", data.employee);
         localStorage.setItem(
           "user",
           JSON.stringify(data.employee)
         );
       } else {
-        alert(data.message || "Failed to update profile.");
+        toast.error(
+          data.message || "Failed to update profile.",
+          {
+            position: "top-right",
+            autoClose: 2000,
+          }
+        );
       }
     } catch (err) {
       console.error(err);
-      alert("Something went wrong. Please try again.");
+      toast.error(
+        "Something went wrong. Please try again.",
+        {
+          position: "top-right",
+          autoClose: 2000,
+        }
+      );
     }
   };
 

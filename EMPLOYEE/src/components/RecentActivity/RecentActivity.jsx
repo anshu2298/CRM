@@ -2,6 +2,7 @@ import "./RecentActivity.css";
 import { useAuth } from "../../context/AuthContext";
 import { useEffect, useState } from "react";
 import { formatDistanceToNow } from "date-fns";
+import { API_PATHS } from "../../utils/apiPaths";
 function RecentActivity() {
   const { user } = useAuth();
   const [activities, setActivities] = useState([]);
@@ -10,7 +11,7 @@ function RecentActivity() {
     const fetchActivity = async () => {
       try {
         const res = await fetch(
-          `http://localhost:3000/api/employee/${user._id}/get-recent-activity`
+          API_PATHS.NOTIFICATION.GET_NOTIFICATIONS
         );
         const data = await res.json();
         setActivities(data.recentActivity.reverse());

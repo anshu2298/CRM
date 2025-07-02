@@ -21,5 +21,7 @@ export const API_PATHS = {
   },
   NOTIFICATION: {
     ADD: `${BASE_URL}/api/events/add-event`,
+    GET_NOTIFICATIONS: (employeeId) =>
+      `${BASE_URL}/api/employee/${employeeId}/get-recent-activity`,
   },
 };
