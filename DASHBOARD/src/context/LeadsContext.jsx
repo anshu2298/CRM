@@ -45,7 +45,6 @@ export const LeadsProvider = ({ children }) => {
           : sum;
       }, 0);
 
-      // Sum of all unassigned leads
       const totalUnassignedLeads = data.reduce(
         (sum, csv) => {
           return sum + (csv.unassignedLeads || 0);
@@ -123,7 +122,6 @@ export const LeadsProvider = ({ children }) => {
     }
   };
 
-  // Call on mount
   useEffect(() => {
     fetchLeads();
     fetchCsvStats();

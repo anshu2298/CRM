@@ -80,7 +80,7 @@ const Employees = ({ menuState, searchTerm }) => {
       preferredLanguage: employee.preferredLanguage,
     });
 
-    setEmployeeToEdit(employee._id); // Save ID to use during update
+    setEmployeeToEdit(employee._id);
     setIsEditMode(true);
     setShowAddModal(true);
   };

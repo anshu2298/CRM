@@ -10,7 +10,6 @@ const addEmployee = async (req, res) => {
       preferredLanguage,
     } = req.body;
 
-    // Validate required fields
     if (
       !firstName ||
       !lastName ||
@@ -23,23 +22,21 @@ const addEmployee = async (req, res) => {
         .json({ message: "All fields are required" });
     }
 
-    // Check for existing email
     const existing = await Employee.findOne({ email });
     if (existing) {
       return res.status(400).json({
         message: "Employee with this email already exists",
       });
     }
-    // Create full name
+
     const name = `${firstName} ${lastName}`;
-    // Generate simple Employee ID
+
     const year = new Date().getFullYear();
     const randomNum = Math.floor(
       1000 + Math.random() * 9000
-    ); // 4-digit number
+    );
     const employeeId = `EMP${year}${randomNum}`;
 
-    // Create and save new employee
     const newEmployee = new Employee({
       name,
       email,
@@ -89,7 +86,6 @@ const deleteEmployee = async (req, res) => {
     const leadsToReassign =
       employeeToDelete.assignedLeads || [];
 
-    // Get other employees to redistribute the leads
     const otherEmployees = await Employee.find({
       _id: { $ne: id },
     });
@@ -100,7 +96,6 @@ const deleteEmployee = async (req, res) => {
       });
     }
 
-    // Round-robin distribute the leads to remaining employees
     let index = 0;
     for (const leadId of leadsToReassign) {
       const targetEmployee = otherEmployees[index];
@@ -110,7 +105,6 @@ const deleteEmployee = async (req, res) => {
       index = (index + 1) % otherEmployees.length;
     }
 
-    // Now delete the employee
     await Employee.findByIdAndDelete(id);
 
     res.status(200).json({
@@ -129,7 +123,6 @@ const updateEmployee = async (req, res) => {
   const updateFields = { ...req.body };
   const addToClosedLeads = updateFields.addToClosedLeads;
 
-  // Remove custom field to avoid accidentally overwriting
   delete updateFields.addToClosedLeads;
 
   const update = { $set: updateFields };
@@ -239,7 +232,6 @@ const getAttendanceSummary = async (req, res) => {
         .json({ message: "Employee not found" });
     }
 
-    // Step 1: Filter today's logs for checkIn / checkOut
     const logsForDay = employee.sessionLogs.filter(
       (log) => {
         const time = new Date(log.timestamp);
@@ -265,7 +257,6 @@ const getAttendanceSummary = async (req, res) => {
         .find((log) => log.type === "logout")?.timestamp;
     }
 
-    // Step 2: Calculate breaks from all logs, not just today
     const allLogs = [...employee.sessionLogs].sort(
       (a, b) =>
         new Date(a.timestamp) - new Date(b.timestamp)

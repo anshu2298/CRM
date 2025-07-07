@@ -165,7 +165,7 @@
 .leads-card {
   background: #fff;
   border-radius: 16px;
-  /* padding: 20px; */
+
   padding: 20px 20px 20px 0;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -216,9 +216,9 @@ select {
   border-radius: 6px;
   background-color: #fff;
   color: #333;
-  appearance: none; /* Remove default arrow (Chrome, Edge, etc.) */
-  -webkit-appearance: none; /* Safari */
-  -moz-appearance: none; /* Firefox */
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
   background-image: url("data:image/svg+xml;utf8,<svg fill='gray' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
   background-repeat: no-repeat;
   background-position: right 10px center;
@@ -249,7 +249,7 @@ select {
 
 .action-button.closed {
   opacity: 0.5;
-  pointer-events: none; /* disables click */
+  pointer-events: none;
   filter: grayscale(80%);
   cursor: default;
 }

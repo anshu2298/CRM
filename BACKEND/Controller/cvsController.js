@@ -40,7 +40,6 @@ const cvsParser = async (req, res) => {
         null,
     }));
 
-    // Separate into two groups
     const leadsWithAssignedEmployee = formattedLeads.filter(
       (lead) => lead.assignedEmployeeEmail
     );
@@ -49,7 +48,6 @@ const cvsParser = async (req, res) => {
         (lead) => !lead.assignedEmployeeEmail
       );
 
-    // ➤ Group 1: Leads with Assigned Employee
     for (const lead of leadsWithAssignedEmployee) {
       const assignedEmpValue = lead.assignedEmployeeEmail;
 
@@ -77,7 +75,6 @@ const cvsParser = async (req, res) => {
       }
     }
 
-    // ➤ Group 2: Leads without Assigned Employee (original logic)
     for (const lead of leadsWithoutAssignedEmployee) {
       let matchedEmployee = employees.find(
         (emp) =>
@@ -109,7 +106,6 @@ const cvsParser = async (req, res) => {
       }
     }
 
-    // ➤ Distribute leftover leads equally among employees
     let employeeIndex = 0;
     for (const leadId of leftoverLeads) {
       const employee = employees[employeeIndex];

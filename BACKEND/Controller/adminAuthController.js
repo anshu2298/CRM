@@ -21,7 +21,6 @@ const updateAdminProfile = async (req, res) => {
   try {
     const { firstName, lastName, email } = req.body;
 
-    // Validate input
     if (!firstName || !lastName || !email) {
       return res
         .status(400)
@@ -36,12 +35,10 @@ const updateAdminProfile = async (req, res) => {
         .json({ message: "Admin not found." });
     }
 
-    // Update fields
     admin.firstName = firstName;
     admin.lastName = lastName;
     admin.email = email;
 
-    // Save changes
     await admin.save();
 
     res.status(200).json({

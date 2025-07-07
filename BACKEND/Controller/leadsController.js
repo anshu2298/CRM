@@ -62,7 +62,6 @@ const updateLead = async (req, res) => {
     const { leadId } = req.params;
     const { leadStatus, type } = req.body;
 
-    // Build update object only with provided fields
     const update = {};
     if (leadStatus) update.leadStatus = leadStatus;
     if (leadStatus === "Closed")

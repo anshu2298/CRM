@@ -11,7 +11,6 @@ const Settings = () => {
     confirmPassword: "***********",
   });
 
-  // Fetch admin data on mount
   const fetchAdminData = async () => {
     try {
       const res = await fetch(
